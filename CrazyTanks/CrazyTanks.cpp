@@ -264,10 +264,10 @@ int main()
 	SetConsoleScreenBufferSize( Handle, coord );            // set buffer size
 	SetConsoleWindowInfo( Handle, TRUE, &Rect );            // set window size
 	
-	::gameOver = false;
-	::score		= 0; 
-	::health	= 3; 
-	::countTank = 5;
+	gameOver = false;
+	score		= 0; 
+	health	= 3; 
+	countTank = 5;
 	//draw map and tanks
 	draw();
 	//create thread for: moving tanks, moving main tank and for bullets
