@@ -9,7 +9,6 @@
 #include <conio.h>
 #include <vector>
 #include <list>
-#include <string>
 
 #include <thread>
 #include <mutex>
@@ -225,7 +224,7 @@ private:
 bool gameOver;
 int score = 0, health = 3, countTank = 5;
 Time timeg = Time( 0, 0, 0 );
-clock_t startGame, restartGame;
+clock_t startGame;
 
 Point
 polygone_h = Point( 5, ( HEIGHT - 5 ) ),
@@ -277,31 +276,36 @@ int main()
 	//clean all and print result
 	system( "cls" );
 	Point( HEIGHT / 2 , WIDTH / 2 - 10 ).moveCursor();
-	if ( score == 50 ) {
+	if ( score == 50 ) 
+	{
 		cout << "Victory !!!";
 	}
-	else {
+	else 
+	{
 		cout << "Game over :( ";
 	}
 	Point( HEIGHT / 2 + 1, WIDTH / 2 - 15 ).moveCursor();
 	cout << "Press escape to close ...";
 	
-	while ( _getch() != 27 ) {
-	}
+	while ( _getch() != 27 ) {}
 	return 0;
 }
 void drawBorder( Point height, Point width ) {
 	for ( int i = height.y; i < height.x; i++ )
 	{
-		for ( int k = width.y; k < width.x; k++ ) {
-			if ( i == 0 || i == height.x - 1 ) {
+		for ( int k = width.y; k < width.x; k++ )
+		{
+			if ( i == 0 || i == height.x - 1 ) 
+			{
 				Point( i, k ).setChar( BORDER );
 			}
 			else
-				if ( k == 0 && i != 0 || k == width.x - 1 && i != height.x - 1 ) {
+				if ( k == 0 && i != 0 || k == width.x - 1 && i != height.x - 1 ) 
+				{
 					Point( i, k ).setChar( BORDER );
 				}
-				else {
+				else
+				{
 					Point( i, k ).setChar( FIELD );
 				}
 		}
@@ -376,8 +380,7 @@ void draw() {
 }
 void logic( mutex &mtx )
 {
-	bool goon = true;
-	while (!gameOver )
+	while ( !gameOver )
 	{
 		mtx.lock();
 		//time game
@@ -392,11 +395,14 @@ void logic( mutex &mtx )
 				continue;
 			}
 			//move tanks 
-			if ( canMoveObj( tanks[i], static_cast<Direction> ( dir ) ) ) {
+			if ( canMoveObj( tanks[i], static_cast<Direction> ( dir ) ) )
+			{
 				tanks[i] = moveObj( tanks[i], static_cast<Direction> ( dir ), TANKS );
 				//recharge whizbang
-				for ( int k = 0; k < whizbangs.size(); k++ ) {
-					if ( whizbangs[k] == Point( 0, 0 ) && tanks[i].move( static_cast<Direction> ( dir ) ).getChar() == FIELD ) {
+				for ( int k = 0; k < whizbangs.size(); k++ ) 
+				{
+					if ( whizbangs[k] == Point( 0, 0 ) && tanks[i].move( static_cast<Direction> ( dir ) ).getChar() == FIELD ) 
+					{
 						whizbangs[k] = tanks[i].move( static_cast<Direction> ( dir ) );
 						whizbangs[k].dir = static_cast<Direction> ( dir );
 						break;
@@ -419,7 +425,8 @@ void events( mutex &mtx ) {
 		 *	moving and shoot of boss
 		 *  
 		*/
-		if ( _kbhit() != 0 ) {
+		if ( _kbhit() != 0 ) 
+		{
 			ev = _getch();
 			switch ( ev )
 			{
@@ -427,33 +434,39 @@ void events( mutex &mtx ) {
 				gameOver = true;
 				break;
 			case 72:
-				if ( canMoveObj( boss, UP ) ) {
+				if ( canMoveObj( boss, UP ) ) 
+				{
 					boss = moveObj( boss, UP, TANK );
 					boss.dir = UP;
 				}
 				break;
 			case 80:
-				if ( canMoveObj( boss, DOWN ) ) {
+				if ( canMoveObj( boss, DOWN ) ) 
+				{
 					boss = moveObj( boss, DOWN, TANK );
 					boss.dir = DOWN;
 				}
 				break;
 			case 75:
-				if ( canMoveObj( boss, LEFT ) ) {
+				if ( canMoveObj( boss, LEFT ) )
+				{
 					boss = moveObj( boss, LEFT, TANK );
 					boss.dir = LEFT;
 				}
 				break;
 			case 77:
-				if ( canMoveObj( boss, RIGHT ) ) {
+				if ( canMoveObj( boss, RIGHT ) )
+				{
 					boss = moveObj( boss, RIGHT, TANK );
 					boss.dir = RIGHT;
 				}
 				break;
 			case 32:
 				//recharge whizbang
-				for ( int k = 0; k < whizbang.size(); k++ ) {
-					if ( whizbang[k] == Point( 0, 0 ) && boss.move( boss.dir ).getChar() == FIELD ) {
+				for ( int k = 0; k < whizbang.size(); k++ )
+				{
+					if ( whizbang[k] == Point( 0, 0 ) && boss.move( boss.dir ).getChar() == FIELD )
+					{
 						whizbang[k] = boss.move( boss.dir );
 						whizbang[k].dir = boss.dir;
 						break;
@@ -463,7 +476,8 @@ void events( mutex &mtx ) {
 
 			}
 		}
-		if ( countTank == 0  || health == 0) {
+		if ( countTank == 0  || health == 0) 
+		{
 			gameOver = true;
 		}
 		mtx.unlock();
@@ -486,7 +500,8 @@ void tick( time_t begin ) {
 	auto last = Time( 0, 0, 0 );
 	clock_t now = clock();
 	last.clock( ( ( now - startGame) / CLOCKS_PER_SEC ) );
-	if ( last.hour != timeg.hour || last.minute == 60 ) {
+	if ( last.hour != timeg.hour || last.minute == 60 )
+	{
 		points.x = WIDTH - 13;
 		timeg.hour = timeg.hour + 1;
 		timeg.hour = 0;
@@ -499,7 +514,8 @@ void tick( time_t begin ) {
 		points.moveCursor();
 		cout << timeg.hour;
 	}
-	else if ( last.minute != timeg.minute || last.second == 60 ) {
+	else if ( last.minute != timeg.minute || last.second == 60 ) 
+	{
 		points.x = WIDTH - 7;
 		timeg.minute = timeg.minute + 1;
 		timeg.second = 0;
@@ -512,7 +528,8 @@ void tick( time_t begin ) {
 		points.moveCursor();
 		cout << timeg.minute;
 	}
-	else if ( last.second != timeg.second ) {
+	else if ( last.second != timeg.second ) 
+	{
 		points.x = WIDTH - 7;
 		timeg.second = timeg.second + 1;
 		points.moveCursor();
@@ -520,16 +537,19 @@ void tick( time_t begin ) {
 
 	}
 }
-bool canMoveObj( Point &points, Direction dir ) {
+bool canMoveObj( Point &points, Direction dir )
+{
 	return( points.move( static_cast<Direction> ( dir ) ).getChar() == FIELD && points.x < WIDTH && points.y < ( HEIGHT - 4 ) && points.y >  4 );
 }
-Point moveObj( Point &points, Direction dir, char obj ) {
+Point moveObj( Point &points, Direction dir, char obj )
+{
 	points.move( STOP ).setChar( FIELD );
 	points = points.move( static_cast<Direction> ( dir ) ).setChar( obj );
 	return points;
 }
 void moveShoot( vector<Point> &shoots, char type ) {
-	for ( int i = 0; i < shoots.size(); i++ ) {
+	for ( int i = 0; i < shoots.size(); i++ ) 
+	{
 
 		if ( !( shoots[i] == Point( 0, 0 ) ) )
 		{
@@ -545,7 +565,8 @@ void moveShoot( vector<Point> &shoots, char type ) {
 				{
 					for ( size_t e = 0; e < tanks.size(); e++ )
 					{
-						if ( tanks[e] == shoots[i].move( shoots[i].dir ) ) {
+						if ( tanks[e] == shoots[i].move( shoots[i].dir ) )
+						{
 							tanks[e].setChar( FIELD );
 							tanks[e] = Point( 0, 0 );
 							score += 10;
@@ -570,7 +591,8 @@ void moveShoot( vector<Point> &shoots, char type ) {
 		}
 	}
 }
-bool isDie( Point &points, char type ) {
+bool isDie( Point &points, char type ) 
+{
 	return (
 		points.move( UP ).getChar() == type ||
 		points.move( DOWN ).getChar() == type ||
